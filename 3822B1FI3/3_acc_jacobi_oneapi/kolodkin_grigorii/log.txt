@@ -1,0 +1,58 @@
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:44:41: warning: 'get_access' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+   44 |             auto x_new_host = buf_x_new.get_access<sycl::access::mode::read>();
+      |                                         ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/buffer.hpp:529:37: note: 'get_access' has been explicitly marked deprecated here
+  529 |           accessor_property_list<>> get_access(const detail::code_location
+      |                                     ^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:44:41: warning: 'get_access<sycl::access::mode::read>' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+   44 |             auto x_new_host = buf_x_new.get_access<sycl::access::mode::read>();
+      |                                         ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/buffer.hpp:523:3: note: 'get_access<sycl::access::mode::read>' has been explicitly marked deprecated here
+  523 |   __SYCL2020_DEPRECATED("get_access for host_accessor is deprecated, please "
+      |   ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:62:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   62 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:53:38: note: expanded from macro '__SYCL_DEPRECATED'
+   53 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:45:33: warning: 'get_access' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+   45 |             auto x_host = buf_x.get_access<sycl::access::mode::write>();
+      |                                 ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/buffer.hpp:529:37: note: 'get_access' has been explicitly marked deprecated here
+  529 |           accessor_property_list<>> get_access(const detail::code_location
+      |                                     ^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:45:33: warning: 'get_access<sycl::access::mode::write>' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+   45 |             auto x_host = buf_x.get_access<sycl::access::mode::write>();
+      |                                 ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/buffer.hpp:523:3: note: 'get_access<sycl::access::mode::write>' has been explicitly marked deprecated here
+  523 |   __SYCL2020_DEPRECATED("get_access for host_accessor is deprecated, please "
+      |   ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:62:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   62 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:53:38: note: expanded from macro '__SYCL_DEPRECATED'
+   53 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:48:35: error: no member named 'fabs' in namespace 'std'
+   48 |                 float diff = std::fabs(x_new_host[i] - x_host[i]);
+      |                              ~~~~~^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:63:33: warning: 'get_access' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+   63 |         auto res_access = buf_x.get_access<sycl::access::mode::read>();
+      |                                 ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/buffer.hpp:529:37: note: 'get_access' has been explicitly marked deprecated here
+  529 |           accessor_property_list<>> get_access(const detail::code_location
+      |                                     ^
+/home/crazyproger/sandbox/oneapi-2026/3822B1FI3/3_acc_jacobi_oneapi/kolodkin_grigorii/acc_jacobi_oneapi.cpp:63:33: warning: 'get_access<sycl::access::mode::read>' is deprecated: get_access for host_accessor is deprecated, please use get_host_access instead [-Wdeprecated-declarations]
+   63 |         auto res_access = buf_x.get_access<sycl::access::mode::read>();
+      |                                 ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/buffer.hpp:523:3: note: 'get_access<sycl::access::mode::read>' has been explicitly marked deprecated here
+  523 |   __SYCL2020_DEPRECATED("get_access for host_accessor is deprecated, please "
+      |   ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:62:40: note: expanded from macro '__SYCL2020_DEPRECATED'
+   62 | #define __SYCL2020_DEPRECATED(message) __SYCL_DEPRECATED(message)
+      |                                        ^
+/opt/intel/oneapi/compiler/2025.1/bin/compiler/../../include/sycl/detail/defines_elementary.hpp:53:38: note: expanded from macro '__SYCL_DEPRECATED'
+   53 | #define __SYCL_DEPRECATED(message) [[deprecated(message)]]
+      |                                      ^
+6 warnings and 1 error generated.
