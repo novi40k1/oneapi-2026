@@ -2,102 +2,64 @@
 #include <cmath>
 
 std::vector<float> JacobiAccONEAPI(
-        const std::vector<float> a, const std::vector<float> b,
+        const std::vector<float>& a, const std::vector<float>& b,
         float accuracy, sycl::device device) {
-    
-    size_t n = b.size(); 
-    std::vector<float> x_curr(n, 0.0f); 
-    std::vector<float> x_next(n, 0.0f); 
-    
-    try {
-        sycl::queue queue(device);
-        sycl::buffer<float, 1> buf_a(a.data(), sycl::range<1>(n * n));
-        sycl::buffer<float, 1> buf_b(b.data(), sycl::range<1>(n));
-        sycl::buffer<float, 1> buf_x_curr(x_curr.data(), sycl::range<1>(n));
-        sycl::buffer<float, 1> buf_x_next(x_next.data(), sycl::range<1>(n));
-        
-        bool converged = false;
-        
-        for (int iter = 0; iter < ITERATIONS && !converged; iter++) {
-            queue.submit([&](sycl::handler& h) {
-                auto acc_a = buf_a.get_access<sycl::access::mode::read>(h);
-                auto acc_b = buf_b.get_access<sycl::access::mode::read>(h);
-                auto acc_x_curr = buf_x_curr.get_access<sycl::access::mode::read>(h);
-                auto acc_x_next = buf_x_next.get_access<sycl::access::mode::write>(h);
-                
-                h.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-                    size_t row = i[0];
-                    float sum = 0.0f;
-                    float a_ii = 0.0f;
-                    for (size_t j = 0; j < n; j++) {
-                        if (j != row) {
-                            sum += acc_a[row * n + j] * acc_x_curr[j];
-                        } else {
-                            a_ii = acc_a[row * n + row];
-                        }
+    const int n = b.size();
+    std::vector<float> x(n, 0.0f);
+    std::vector<float> x_new(n, 0.0f);
+
+    sycl::buffer<float, 1> buf_a(a.data(), sycl::range<1>(a.size()));
+    sycl::buffer<float, 1> buf_b(b.data(), sycl::range<1>(b.size()));
+    sycl::buffer<float, 1> buf_x(x.data(), sycl::range<1>(n));
+    sycl::buffer<float, 1> buf_x_new(x_new.data(), sycl::range<1>(n));
+
+    sycl::queue q(device);
+    for (int iter = 0; iter < ITERATIONS; ++iter) {
+        q.submit([&](sycl::handler& cgh) {
+            auto a_acc = buf_a.get_access<sycl::access::mode::read>(cgh);
+            auto b_acc = buf_b.get_access<sycl::access::mode::read>(cgh);
+            auto x_acc = buf_x.get_access<sycl::access::mode::read>(cgh);
+            auto x_new_acc = buf_x_new.get_access<sycl::access::mode::write>(cgh);
+
+            cgh.parallel_for<class jacobi_step>(sycl::range<1>(n), [=](sycl::id<1> i_id) {
+                int i = i_id[0];
+                float sum = 0.0f;
+                float a_ii = a_acc[i * n + i];
+                for (int j = 0; j < n; ++j) {
+                    if (j != i) {
+                        sum += a_acc[i * n + j] * x_acc[j];
                     }
-        
-                    if (std::abs(a_ii) > 1e-10f) { 
-                        acc_x_next[row] = (acc_b[row] - sum) / a_ii;
-                    } else {
-                        acc_x_next[row] = 0.0f;
-                    }
-                });
-            }).wait();
-            sycl::buffer<float, 1> buf_max_diff(sycl::range<1>(1));
-
-            {
-                auto host_acc = buf_max_diff.get_host_access();
-                host_acc[0] = 0.0f;
-            }
-            
-            queue.submit([&](sycl::handler& h) {
-                auto acc_x_curr = buf_x_curr.get_access<sycl::access::mode::read>(h);
-                auto acc_x_next = buf_x_next.get_access<sycl::access::mode::read>(h);
-                auto acc_max_diff = buf_max_diff.get_access<sycl::access::mode::write>(h);
-                
-                h.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-                    float diff = std::abs(acc_x_next[i] - acc_x_curr[i]);
-                    sycl::atomic_ref<float, 
-                        sycl::memory_order::relaxed, 
-                        sycl::memory_scope::device,
-                        sycl::access::address_space::global_space> atomic_max(acc_max_diff[0]);
-                    
-                    float old = atomic_max.load();
-                    while (diff > old && !atomic_max.compare_exchange_strong(old, diff)) {}
+                }
+                x_new_acc[i] = (b_acc[i] - sum) / a_ii;
                 });
             }).wait();
 
-            float max_diff = 0.0f;
-            {
-                auto host_acc_max_diff = buf_max_diff.get_host_access();
-                max_diff = host_acc_max_diff[0];
-            }
-
-            queue.submit([&](sycl::handler& h) {
-                auto acc_x_curr = buf_x_curr.get_access<sycl::access::mode::write>(h);
-                auto acc_x_next = buf_x_next.get_access<sycl::access::mode::read>(h);
-                
-                h.parallel_for(sycl::range<1>(n), [=](sycl::id<1> i) {
-                    acc_x_curr[i] = acc_x_next[i];
-                });
-            }).wait();
-
-            if (max_diff < accuracy) {
-                converged = true;
-            }
-        }
-
+        bool converged = true;
         {
-            auto host_acc_x_curr = buf_x_curr.get_host_access();
-            for (size_t i = 0; i < n; i++) {
-                x_curr[i] = host_acc_x_curr[i];
+            auto x_new_host = buf_x_new.get_access<sycl::access::mode::read>();
+            auto x_host = buf_x.get_access<sycl::access::mode::write>();
+
+            for (int i = 0; i < n; ++i) {
+                float diff = std::fabs(x_new_host[i] - x_host[i]);
+                x_host[i] = x_new_host[i];
+                if (diff >= accuracy) {
+                    converged = false;
+                }
             }
         }
-        
-    } catch (sycl::exception& e) {
-        std::cerr << "SYCL exception caught: " << e.what() << std::endl;
+
+        if (converged) {
+            break;
+        }
     }
-    
-    return x_curr;
+
+    std::vector<float> result(n);
+    {
+        auto res_access = buf_x.get_access<sycl::access::mode::read>();
+        for (int i = 0; i < n; ++i) {
+            result[i] = res_access[i];
+        }
+    }
+
+    return result;
 }
