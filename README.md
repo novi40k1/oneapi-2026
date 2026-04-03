@@ -532,6 +532,7 @@ std::vector<float> JacobiKokkos(
 ## 3_acc_jacobi_oneapi (4096 elements)
 |Group|Name|Result|Rank|
 |-----|----|------|----|
+|3822B1FI3|ekaterina_kozlova|0.2627|7|
 |3822B1FI2|khokhlov_andrey|0.2654|3|
 |3822B1FI1|shulpin_ilya|0.2705|7|
 |**REF**|**REF**|**0.2749**|**-**|
@@ -551,7 +552,6 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|yasakova_tanya|0.3980|2|
 |3822B1FI1|drozhdinov_dmitriy|0.5052|2|
 |3822B1FI1|mironov_arseniy|TEST FAILED|-|
-|3822B1FI3|ekaterina_kozlova|BUILD FAILED|-|
 
 ## 4_dev_jacobi_oneapi (4096 elements)
 |Group|Name|Result|Rank|
@@ -597,9 +597,9 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|beskhmelnova_kseniya|0.3483|2|
 |3822B1FI2|yasakova_tanya|0.3532|2|
 |3822B1FI3|lopatin_ilya|0.3664|3|
+|3822B1FI3|ekaterina_kozlova|0.3673|7|
 |3822B1FI3|kolodkin_grigorii|0.4017|1|
 |3822B1FI3|frolova_elizaveta|0.4647|2|
-|3822B1FI3|ekaterina_kozlova|TEST FAILED|-|
 
 ## 6_block_gemm_oneapi (3072 elements)
 |Group|Name|Result|Rank|
@@ -684,6 +684,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI2|yasakova_tanya|0.3641|1|
 |3822B1FI3|kolodkin_grigorii|0.3787|1|
 |3822B1FI1|solovev_alexey|0.3892|3|
+|3822B1FI1|drozhdinov_dmitriy|TEST FAILED|-|
 
 # Tasks Done
 ## 3822B1FI1
@@ -715,18 +716,18 @@ Passed: 2
 ## 3822B1FI3
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI3|chizhov_maxim|7/9|383|
-|3822B1FI3|ekaterina_kozlova|7/9|406|
-|3822B1FI3|frolova_elizaveta|**9/9**|**538**|
-|3822B1FI3|kholin_kirill|**9/9**|**518**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**544**|
-|3822B1FI3|lopatin_ilya|**9/9**|**545**|
-|3822B1FI3|lysov_ivan|7/9|397|
+|3822B1FI3|chizhov_maxim|7/9|382|
+|3822B1FI3|ekaterina_kozlova|**9/9**|**518**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**536**|
+|3822B1FI3|kholin_kirill|**9/9**|**517**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**542**|
+|3822B1FI3|lopatin_ilya|**9/9**|**544**|
+|3822B1FI3|lysov_ivan|7/9|396|
 |3822B1FI3|sozonov_ilya|1/9|57|
 
-Passed: 4
+Passed: 5
 
-**Total Passed: 13**
+**Total Passed: 14**
 
 ---
 *Maximum Score: 576 (64 per task)*
