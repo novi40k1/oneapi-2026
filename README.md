@@ -686,6 +686,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI3|lopatin_ilya|0.3165|3|
 |3822B1FI1|shurigin_sergey|0.3170|5|
 |3822B1FI2|bessonov_egor|0.3179|2|
+|3822B1FI3|chizhov_maxim|0.3184|6|
 |3822B1FI1|chistov_alexey|0.3202|2|
 |3822B1FI1|beskhmelnova_kseniya|0.3214|1|
 |3822B1FI3|kholin_kirill|0.3248|5|
@@ -728,18 +729,18 @@ Passed: 2
 ## 3822B1FI3
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI3|chizhov_maxim|8/9|436|
-|3822B1FI3|ekaterina_kozlova|**9/9**|**518**|
-|3822B1FI3|frolova_elizaveta|**9/9**|**536**|
-|3822B1FI3|kholin_kirill|**9/9**|**517**|
-|3822B1FI3|kolodkin_grigorii|**9/9**|**542**|
+|3822B1FI3|chizhov_maxim|**9/9**|**494**|
+|3822B1FI3|ekaterina_kozlova|**9/9**|**517**|
+|3822B1FI3|frolova_elizaveta|**9/9**|**535**|
+|3822B1FI3|kholin_kirill|**9/9**|**516**|
+|3822B1FI3|kolodkin_grigorii|**9/9**|**541**|
 |3822B1FI3|lopatin_ilya|**9/9**|**544**|
 |3822B1FI3|lysov_ivan|7/9|396|
 |3822B1FI3|sozonov_ilya|1/9|57|
 
-Passed: 5
+Passed: 6
 
-**Total Passed: 15**
+**Total Passed: 16**
 
 ---
 *Maximum Score: 576 (64 per task)*
