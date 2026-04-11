@@ -28,7 +28,10 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float>& a,
   const size_t global_size = ((n + local_size - 1) / local_size) * local_size;
 
   for (int iter = 0; iter < ITERATIONS; ++iter) {
-    error = 0.0f;
+    {
+      auto acc = err_buf.get_host_access();
+      acc[0] = 0.0f;
+    }
 
     queue.submit([&](sycl::handler& h) {
       auto A = a_buf.get_access<sycl::access::mode::read>(h);
@@ -46,7 +49,7 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float>& a,
                        size_t i = item.get_global_id(0);
                        size_t lid = item.get_local_id(0);
 
-                       if (i >= n) return;
+                       bool active = (i < n);
 
                        float sigma = 0.0f;
 
@@ -57,28 +60,33 @@ std::vector<float> JacobiAccONEAPI(const std::vector<float>& a,
 
                          item.barrier(sycl::access::fence_space::local_space);
 
-                         for (size_t k = 0; k < local_size; ++k) {
-                           size_t col = tile + k;
+                         size_t tile_end = sycl::min(tile + local_size, n);
 
-                           if (col < n) {
-                             sigma += A[i * n + col] * x_tile[k];
+                         for (size_t col = tile; col < tile_end; ++col) {
+                           if (active && col != i) {
+                             sigma += A[i * n + col] * x_tile[col - tile];
                            }
                          }
 
                          item.barrier(sycl::access::fence_space::local_space);
                        }
 
-                       sigma -= A[i * n + i] * X_old[i];
+                       if (active) {
+                         float new_val = (B[i] - sigma) * INV[i];
+                         X_new[i] = new_val;
 
-                       float new_val = (B[i] - sigma) * INV[i];
-                       X_new[i] = new_val;
-
-                       float diff = sycl::fabs(new_val - X_old[i]);
-                       err_sum += diff;
+                         float diff = sycl::fabs(new_val - X_old[i]);
+                         err_sum += diff;
+                       }
                      });
     });
 
     queue.wait();
+
+    {
+      auto acc = err_buf.get_host_access();
+      error = acc[0];
+    }
 
     if (error < accuracy) break;
 
