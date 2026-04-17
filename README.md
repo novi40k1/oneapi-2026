@@ -680,6 +680,7 @@ std::vector<float> JacobiKokkos(
 |3822B1FI1|kurakin_matvey|0.2838|9|
 |3822B1FI2|khokhlov_andrey|0.2911|3|
 |3822B1FI2|vyunova_ekaterina|0.2954|6|
+|3822B1FI2|vyunov_danila|0.3006|7|
 |3822B1FI2|plekhanov_daniil|0.3012|5|
 |3822B1FI1|mironov_arseniy|0.3027|10|
 |3822B1FI2|guseynov_emil|0.3119|4|
@@ -779,14 +780,14 @@ Passed: 9
 ## 3822B1FI2
 |Group|Name|Passed|Score|
 |-----|----|------|-----|
-|3822B1FI2|bessonov_egor|**9/9**|**546**|
-|3822B1FI2|guseynov_emil|7/9|412|
+|3822B1FI2|bessonov_egor|**9/9**|**545**|
+|3822B1FI2|guseynov_emil|7/9|411|
 |3822B1FI2|khokhlov_andrey|**9/9**|**541**|
-|3822B1FI2|plekhanov_daniil|7/9|402|
+|3822B1FI2|plekhanov_daniil|7/9|401|
 |3822B1FI2|sdobnov_vladimir|2/9|112|
-|3822B1FI2|vyunov_danila|4/9|220|
+|3822B1FI2|vyunov_danila|5/9|276|
 |3822B1FI2|vyunova_ekaterina|6/9|339|
-|3822B1FI2|yasakova_tanya|**9/9**|**542**|
+|3822B1FI2|yasakova_tanya|**9/9**|**541**|
 
 Passed: 3
 
