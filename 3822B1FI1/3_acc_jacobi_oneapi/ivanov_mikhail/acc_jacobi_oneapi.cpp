@@ -3,16 +3,6 @@
 std::vector<float> JacobiAccONEAPI(
   const std::vector<float>& a, const std::vector<float>& b,
   float accuracy, sycl::device device) {
-  
-  auto norm = [](const std::vector<float>& a, const std::vector<float>& b) -> float {
-    size_t n = a.size();
-    float dist = 0.0f;
-    for (size_t i = 0; i < n; i++) {
-      float delta = a[i] - b[i];
-      dist += delta * delta;;
-    }
-    return dist;
-  };
 
   size_t n = b.size();
   std::vector<float> cur_x(n, 0.0f);
@@ -26,34 +16,37 @@ std::vector<float> JacobiAccONEAPI(
   sycl::buffer<float> buf_cur_x(cur_x.data(), cur_x.size());
 
   float diff = 0.0f;
-
+  
   for (size_t iteration = 0; iteration < ITERATIONS; iteration++) {
     sycl::buffer<float> buf_diff(&diff, sycl::range<1>(1));
+    diff = 0.0f;
 
-    q.submit([&](sycl::handler& h) {
-      auto in_a = buf_a.get_access<sycl::access::mode::read>(h);
-      auto in_b = buf_b.get_access<sycl::access::mode::read>(h);
-      auto in_prev_x = buf_prev_x.get_access<sycl::access::mode::read>(h);
-      auto out_cur_x = buf_cur_x.get_access<sycl::access::mode::write>(h);
+    {
+      q.submit([&](sycl::handler& h) {
+        auto in_a = buf_a.get_access<sycl::access::mode::read>(h);
+        auto in_b = buf_b.get_access<sycl::access::mode::read>(h);
+        auto in_prev_x = buf_prev_x.get_access<sycl::access::mode::read>(h);
+        auto out_cur_x = buf_cur_x.get_access<sycl::access::mode::write>(h);
 
-      auto reduction = sycl::reduction(buf_diff, h, sycl::plus<float>());
+        auto reduction = sycl::reduction(buf_diff, h, sycl::plus<float>());
 
-      h.parallel_for(sycl::range<1>(n), reduction, [=](sycl::id<1> idx, auto& sum_diff) {
-        size_t i = idx[0];
-        
-        float res = 0.0f;
-        for (size_t j = 0; j < n; j++) {
-          if (i != j) {
-            res += in_a[i * n + j] * in_prev_x[j];
+        h.parallel_for(sycl::range<1>(n), reduction, [=](sycl::id<1> idx, auto& sum_diff) {
+          size_t i = idx[0];
+
+          float res = 0.0f;
+          for (size_t j = 0; j < n; j++) {
+            if (i != j) {
+              res += in_a[i * n + j] * in_prev_x[j];
+            }
           }
-        }
 
-        float new_x = (in_b[i] - res) / in_a[i * n + i];
-        out_cur_x[i] = new_x;
-        sum_diff += (new_x - in_prev_x[i]) * (new_x - in_prev_x[i]);
+          float new_x = (in_b[i] - res) / in_a[i * n + i];
+          out_cur_x[i] = new_x;
+          sum_diff += (new_x - in_prev_x[i]) * (new_x - in_prev_x[i]);
+          });
         });
-      });
-    q.wait();
+      q.wait();
+    }
 
     if (diff < accuracy * accuracy)
       break;
