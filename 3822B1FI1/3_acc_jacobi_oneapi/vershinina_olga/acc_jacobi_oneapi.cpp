@@ -67,7 +67,7 @@ std::vector<float> JacobiAccONEAPI(
             std::swap(curr, next);
         }
 
-        sycl::host_accessor res_acc((curr == 0 ? x_curr_buf : x_next_buf), sycl::read_only);
+        sycl::host_accessor res_acc((curr == 0 ? x_next_buf : x_curr_buf), sycl::read_only);
         for (size_t i = 0; i < n; ++i) {
             x_curr[i] = res_acc[i];
         }
